@@ -1,0 +1,16 @@
+setwd("C:/Users/Edwin/Documents/R/HPower")
+fileurl <- "C:/Users/Edwin/Documents/R/HPower/household_power_consumption.txt"
+library(lubridate)
+Plot_dat <- read.csv(fileurl, sep = ";", na.strings = "?", colClasses=c('character','character','numeric','numeric','numeric','numeric','numeric','numeric','numeric'))
+plt1 <- mutate(Plot_dat, Date_Time=(paste(Plot_dat$Date, Plot_dat$Time, sep=" ")))
+plt1$Date_Time <- strptime(plt1$Date_Time, "%d/%m/%Y %H:%M:%S")
+plt1m <- subset(plt1, Date_Time >= as.POSIXct('2007-02-01 00:00') & Date_Time <= as.POSIXct('2007-02-02 24:00'))
+plt1m1 <- mutate(plt1m, dofw = wday(plt1m$Date_Time, label=TRUE))
+png(file = "plot3.png", width = 480, height = 480)
+with(plt1m1, plot(Date_Time, Sub_metering_1, xlab = "", ylab = "Energy sub metering", type = "n"))
+lines(plt1m1$Date_Time,plt1m1$Sub_metering_1,col="black")
+lines(plt1m1$Date_Time,plt1m1$Sub_metering_2,col="red")
+lines(plt1m1$Date_Time,plt1m1$Sub_metering_3,col="blue")
+legend('topright', c("Sub_metering_1","Sub_metering_2","Sub_metering_3"), lty = 1, col=c("black","red","blue"), cex=.75)
+##You need to put the legends
+dev.off()

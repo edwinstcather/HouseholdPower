@@ -1,0 +1,11 @@
+setwd("C:/Users/Edwin/Documents/R/HPower")
+fileurl <- "C:/Users/Edwin/Documents/R/HPower/household_power_consumption.txt"
+library(lubridate)
+Plot_dat <- read.csv(fileurl, sep = ";", na.strings = "?", colClasses=c('character','character','numeric','numeric','numeric','numeric','numeric','numeric','numeric'))
+plt1 <- mutate(Plot_dat, Date_Time=(paste(Plot_dat$Date, Plot_dat$Time, sep=" ")))
+plt1$Date_Time <- strptime(plt1$Date_Time, "%d/%m/%Y %H:%M:%S")
+plt1m <- subset(plt1, Date_Time >= as.POSIXct('2007-02-01 00:00') & Date_Time <= as.POSIXct('2007-02-02 24:00'))
+plt1m1 <- mutate(plt1m, dofw = wday(plt1m$Date_Time, label=TRUE))
+png(file = "plot2.png", width = 480, height = 480)
+with(plt1m1, plot(Date_Time, Global_active_power, xlab ="", ylab = "Global Active Power (kilowatts)", type = "l"))
+dev.off()
